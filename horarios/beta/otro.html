@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Draggable Buttons</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+    <style>
+        .hour-button {
+            width: 150px;
+            height: 50px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            cursor: move;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Lunes</th>
+                <th>Martes</th>
+                <th>Miércoles</th>
+                <th>Jueves</th>
+                <th>Viernes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>8:00 - 9:00</td>
+                <td>
+                    <div class="hour-button" draggable="true" data-coleccion='{"profesor": "Juan", "aula": "A1"}'>
+                        Arrastrar Juan - A1</div>
+                </td>
+                <td>
+                    <div class="hour-button" draggable="true" data-coleccion='{"profesor": "Pedro", "aula": "B1"}'>
+                        Arrastrar Pedro - B1</div>
+                </td>
+                <td>
+                    <div class="hour-button" draggable="true" data-coleccion='{"profesor": "Luis", "aula": "C1"}'>
+                        Arrastrar Luis - C1</div>
+                </td>
+                <td>
+                    <div class="hour-button" draggable="true" data-coleccion='{"profesor": "Ana", "aula": "D1"}'>
+                        Arrastrar Ana - D1</div>
+                </td>
+                <td>
+                    <div class="hour-button" draggable="true" data-coleccion='{"profesor": "María", "aula": "E1"}'>
+                        Arrastrar María - E1</div>
+                </td>
+            </tr>
+            <!-- Agrega más filas según tus necesidades -->
+        </tbody>
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+    <script>
+        var datos = {
+            profesor: ['Juan', 'Pedro', 'Luis', 'Ana', 'María'],
+            aula: ['A1', 'B1', 'C1', 'D1', 'E1']
+        };
+
+        var hourButtons = document.querySelectorAll('.hour-button');
+        hourButtons.forEach(function (button) {
+            button.addEventListener('dragstart', handleDragStart, false);
+            button.addEventListener('dragover', handleDragOver, false);
+            button.addEventListener('drop', handleDrop, false);
+            button.addEventListener('dragend', function () {
+                this.classList.remove('dragging');
+            });
+        });
+
+        function handleDragStart(event) {
+            this.classList.add('dragging');
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/html', this.innerHTML);
+            event.dataTransfer.setData('application/json', JSON.stringify(this.dataset.coleccion));
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDrop(event) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            var dragData = JSON.parse(event.dataTransfer.getData('application/json'));
+            var dropData = JSON.parse(this.dataset.coleccion);
+
+            this.innerHTML = 'Arrastrar ' + dropData.profesor + ' - ' + dropData.aula;
+            this.dataset.coleccion = JSON.stringify(dropData);
+
+            event.dataTransfer.clearData();
+        }
+
+        hourButtons.forEach(function (button) {
+            button.addEventListener('click', handleEditButtonClick);
+        });
+
+        function handleEditButtonClick(event) {
+            var button = this;
+            var container = button.parentNode;
+            var coleccion = JSON.parse(container.dataset.coleccion);
+
+            Swal.fire({
+                title: 'Editar Datos',
+                html:
+                    '<label>Profesor:</label>' +
+                    '<select id="profesor-select" class="swal2-select">' +
+                    generateOptions(datos.profesor, coleccion.profesor) +
+                    '</select>' +
+                    '<label>Aula:</label>' +
+                    '<select id="aula-select" class="swal2-select">' +
+                    generateOptions(datos.aula, coleccion.aula) +
+                    '</select>',
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+                cancelButtonText: 'Cancelar',
+                focusConfirm: false,
+                preConfirm: () => {
+                    var profesorSelect = document.getElementById('profesor-select');
+                    var aulaSelect = document.getElementById('aula-select');
+                    var nuevoProfesor = profesorSelect.value;
+                    var nuevaAula = aulaSelect.value;
+
+                    if (nuevoProfesor && nuevaAula) {
+                        coleccion.profesor = nuevoProfesor;
+                        coleccion.aula = nuevaAula;
+                        container.dataset.coleccion = JSON.stringify(coleccion);
+                        button.innerHTML = 'Arrastrar ' + nuevoProfesor + ' - ' + nuevaAula;
+                    }
+                }
+            });
+        }
+
+        function generateOptions(options, selectedValue) {
+            var html = '';
+            for (var i = 0; i < options.length; i++) {
+                var option = options[i];
+                var isSelected = option === selectedValue ? 'selected' : '';
+                html += '<option value="' + option + '" ' + isSelected + '>' + option + '</option>';
+            }
+            return html;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creat Estudiante</title>
+</head>
+
+<body>
+    <h1>Crear Estudiante</h1>
+    <form action="crear_estudiante.php" method="post">
+        <label for="nombre">Nombre</label>
+        <input type="text" required name="nombre" placeholder="Nombre">
+        <label for="apellido">Apellido</label>
+        <input type="text" required name="apellido" placeholder="Apellido">
+        <label for="seccion">Sección</label>
+        <select name="seccion" required id="seccion">
+            <option value="">Seleccione</option>
+        </select>
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+    crossorigin="anonymous"></script>
+<script>
+    $.ajax({
+        url: 'listar_seccion.php',
+        type: 'POST',
+
+        success: function (res) {
+            console.log(res);
+        },
+        error: function (err) {
+            $("#seccion").prop("disabled", true);
+            alert('no hay secciones disponibles')
+        }
+    });
+</script>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Horario de Disponibilidad</title>
+    <style>
+        .hour {
+            display: inline-block;
+            width: 80px;
+            height: 30px;
+            border: 1px solid black;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .available {
+            background-color: lightgreen;
+        }
+
+        .occupied {
+            background-color: lightgray;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.hour').click(function () {
+                $(this).toggleClass('available occupied');
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Horario de Disponibilidad</h1>
+    <h3>Lunes</h3>
+    <div class="hours-container">
+        <div class="hour occupied">9:00</div>
+        <div class="hour occupied">10:00</div>
+        <div class="hour occupied">11:00</div>
+        <div class="hour occupied">12:00</div>
+        <div class="hour occupied">13:00</div>
+        <div class="hour occupied">14:00</div>
+        <div class="hour occupied">15:00</div>
+        <div class="hour occupied">16:00</div>
+        <div class="hour occupied">17:00</div>
+        <div class="hour occupied">18:00</div>
+        <div class="hour occupied">19:00</div>
+        <div class="hour occupied">20:00</div>
+    </div>
+    <!-- Repite la estructura anterior para los demás días de la semana -->
+
+</body>
+
+</html>
